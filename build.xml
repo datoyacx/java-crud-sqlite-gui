@@ -9,6 +9,7 @@
 <!-- in the project's Project Properties dialog box.-->
 <project name="java-crud-sqlite-gui" default="default" basedir=".">
     <description>Builds, tests, and runs the project java-crud-sqlite-gui.</description>
+    <zipfileset src="lib/jcalendar-0.8.1.jar" excludes="META-INF/*" />
     <import file="nbproject/build-impl.xml"/>
     <!--
 

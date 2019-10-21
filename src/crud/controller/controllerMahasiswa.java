@@ -22,7 +22,7 @@ public class controllerMahasiswa implements interMahasiswa{
 
     public Mahasiswa insert(Mahasiswa o) throws SQLException {//untuk insert ke database
         java.sql.Connection conn = new DBConnection().connect();
-        PreparedStatement st = conn.prepareStatement("INSERT INTO mahasiswa (nim, nama, tanggallahir, jeniskelamin, jurusan, profilegambar, nilaiuts, nilaiuas) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        PreparedStatement st = conn.prepareStatement("INSERT INTO mahasiswa (nim, nama, tanggallahir, jeniskelamin, jurusan, profilegambar, nilaiuts, nilaiuas, agama) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
         st.setString(1, o.getNIM());
         st.setString(2, o.getNama());
         st.setString(3, o.getTanggalLahir());
@@ -31,13 +31,14 @@ public class controllerMahasiswa implements interMahasiswa{
         st.setString(6, o.getProfileGambar());
         st.setString(7, String.valueOf((float) o.getNilaiUTS()));
         st.setString(8, String.valueOf((float) o.getNilaiUAS()));
+        st.setString(9, o.getAgama());
         st.executeUpdate();
         return o;
     }
     public void update(Mahasiswa o) throws SQLException {//untuk update ke database
         java.sql.Connection conn = new DBConnection().connect();
         
-        PreparedStatement st = conn.prepareStatement("update mahasiswa set nim=?, nama=?, tanggallahir=?, jeniskelamin=?, jurusan=?, profilegambar=?, nilaiuts=?, nilaiuas=? where id=?");
+        PreparedStatement st = conn.prepareStatement("update mahasiswa set nim=?, nama=?, tanggallahir=?, jeniskelamin=?, jurusan=?, profilegambar=?, nilaiuts=?, nilaiuas=?, agama=? where id=?");
         
         st.setString(1, o.getNIM());
         st.setString(2, o.getNama());
@@ -47,7 +48,8 @@ public class controllerMahasiswa implements interMahasiswa{
         st.setString(6, o.getProfileGambar());
         st.setString(7, String.valueOf((float) o.getNilaiUTS()));
         st.setString(8, String.valueOf((float) o.getNilaiUAS()));
-        st.setInt(9, o.getId());
+        st.setString(9, o.getAgama());
+        st.setInt(10, o.getId());
         st.executeUpdate();
     }
 
@@ -74,7 +76,8 @@ public class controllerMahasiswa implements interMahasiswa{
                     rs.getString("jurusan"),
                     rs.getString("profilegambar"),
                     rs.getFloat("nilaiuts"),
-                    rs.getFloat("nilaiuas")
+                    rs.getFloat("nilaiuas"),
+                    rs.getString("agama")
             );
         }
         return wako;
@@ -103,7 +106,9 @@ public class controllerMahasiswa implements interMahasiswa{
                     rs.getString("jurusan"),
                     rs.getString("profilegambar"),
                     rs.getFloat("nilaiuts"),
-                    rs.getFloat("nilaiuas")
+                    rs.getFloat("nilaiuas"),
+                    rs.getString("agama")
+                    
             );
             list.add(mhs);
         }

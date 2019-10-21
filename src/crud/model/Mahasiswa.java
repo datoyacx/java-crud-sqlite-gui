@@ -11,13 +11,13 @@ package crud.model;
  */
 public class Mahasiswa {
     int id;
-    String nim, nama, profilegambar, jurusan, jeniskelamin, tanggallahir;
+    String nim, nama, profilegambar, jurusan, jeniskelamin, tanggallahir, agama;
     float nilaiuts, nilaiuas;
     
     public Mahasiswa() {
     }
     
-    public Mahasiswa (int id, String nim, String nama, String tanggallahir, String jeniskelamin, String jurusan,  String profilegambar, float nilaiuts, float nilaiuas) {
+    public Mahasiswa (int id, String nim, String nama, String tanggallahir, String jeniskelamin, String jurusan,  String profilegambar, float nilaiuts, float nilaiuas, String agama) {
         this.id = id;
         this.nim = nim;
         this.nama = nama;
@@ -27,6 +27,7 @@ public class Mahasiswa {
         this.tanggallahir = tanggallahir;
         this.nilaiuts = nilaiuts;
         this.nilaiuas = nilaiuas;
+        this.agama = agama;
     }
     
     public int getId() {
@@ -90,6 +91,10 @@ public class Mahasiswa {
         float hasil2 = nilaiuas*70/100;
         float hasil3 = hasil1+hasil2;
         return hasil3;
+    }
+    
+    public String getAgama() {
+        return this.agama;
     }
     
 }
