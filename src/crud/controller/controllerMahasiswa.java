@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package crud.controller;
-import crud.controller.interMahasiswa;
 import crud.model.Mahasiswa;
 import crud.conn.DBConnection;
 import java.sql.PreparedStatement;
@@ -20,6 +19,7 @@ import java.util.List;
  */
 public class controllerMahasiswa implements interMahasiswa{
 
+    @Override
     public Mahasiswa insert(Mahasiswa o) throws SQLException {//untuk insert ke database
         java.sql.Connection conn = new DBConnection().connect();
         PreparedStatement st = conn.prepareStatement("INSERT INTO mahasiswa (nim, nama, tanggallahir, jeniskelamin, jurusan, profilegambar, nilaiuts, nilaiuas, agama) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -35,6 +35,8 @@ public class controllerMahasiswa implements interMahasiswa{
         st.executeUpdate();
         return o;
     }
+    
+    @Override
     public void update(Mahasiswa o) throws SQLException {//untuk update ke database
         java.sql.Connection conn = new DBConnection().connect();
         
@@ -53,6 +55,7 @@ public class controllerMahasiswa implements interMahasiswa{
         st.executeUpdate();
     }
 
+    @Override
     public void delete(int ids) throws SQLException {// untuk delete berdasarkan nim
         java.sql.Connection conn = new DBConnection().connect();
         PreparedStatement st = conn.prepareStatement("delete from mahasiswa where id=?");
@@ -60,6 +63,7 @@ public class controllerMahasiswa implements interMahasiswa{
         st.executeUpdate();
     }
     
+    @Override
     public Mahasiswa find(int ids) throws SQLException {// untuk delete berdasarkan nim
         java.sql.Connection conn = new DBConnection().connect();
         PreparedStatement ps = conn.prepareStatement("SELECT * FROM mahasiswa WHERE id = ?");
@@ -68,21 +72,22 @@ public class controllerMahasiswa implements interMahasiswa{
         Mahasiswa wako = null;
         while(rs.next()){
             wako = new Mahasiswa(
-                    rs.getInt("id"),
-                    rs.getString("nim"),
-                    rs.getString("nama"),
-                    rs.getString("tanggallahir"),
-                    rs.getString("jeniskelamin"),
-                    rs.getString("jurusan"),
-                    rs.getString("profilegambar"),
-                    rs.getFloat("nilaiuts"),
-                    rs.getFloat("nilaiuas"),
-                    rs.getString("agama")
+                rs.getInt("id"),
+                rs.getString("nim"),
+                rs.getString("nama"),
+                rs.getString("tanggallahir"),
+                rs.getString("jeniskelamin"),
+                rs.getString("jurusan"),
+                rs.getString("profilegambar"),
+                rs.getFloat("nilaiuts"),
+                rs.getFloat("nilaiuas"),
+                rs.getString("agama")
             );
         }
         return wako;
     }
 
+    @Override
     public List<Mahasiswa> getAll(String nama) throws SQLException { // untuk read all, jadi semua data diambil dan ditampilkan
         java.sql.Connection conn = new DBConnection().connect();
         ResultSet rs = null;
@@ -98,17 +103,16 @@ public class controllerMahasiswa implements interMahasiswa{
         List<Mahasiswa> list = new ArrayList();
         while(rs.next()){
             Mahasiswa mhs = new Mahasiswa(
-                    rs.getInt("id"),
-                    rs.getString("nim"),
-                    rs.getString("nama"),
-                    rs.getString("tanggallahir"),
-                    rs.getString("jeniskelamin"),
-                    rs.getString("jurusan"),
-                    rs.getString("profilegambar"),
-                    rs.getFloat("nilaiuts"),
-                    rs.getFloat("nilaiuas"),
-                    rs.getString("agama")
-                    
+                rs.getInt("id"),
+                rs.getString("nim"),
+                rs.getString("nama"),
+                rs.getString("tanggallahir"),
+                rs.getString("jeniskelamin"),
+                rs.getString("jurusan"),
+                rs.getString("profilegambar"),
+                rs.getFloat("nilaiuts"),
+                rs.getFloat("nilaiuas"),
+                rs.getString("agama")  
             );
             list.add(mhs);
         }

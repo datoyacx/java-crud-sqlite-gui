@@ -8,12 +8,13 @@ package crud.view;
 import crud.controller.controllerMahasiswa;
 import crud.controller.interMahasiswa;
 import crud.model.Mahasiswa;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.PrintJob;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.lang.System.Logger;
-import java.lang.System.Logger.Level;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -40,32 +41,28 @@ import javax.swing.table.DefaultTableModel;
  * @author Touyashi
  */
 public class viewMahasiswa extends javax.swing.JFrame {
-    //public DefaultTableModel okkk;
-    List record = new ArrayList();//untuk menampung getAll()
-    interMahasiswa mhsServis;//untuk membuat objek dari class implement mahasiswa
+    List record = new ArrayList();
+    interMahasiswa mhsServis;
     int row, isUpdate = 0;
-    String imageRightnow = "img/profile.png", updateImageNow = "";
+    String imageRightnow = "img\\profile.jpg", updateImageNow = "";
     File fileRightnow;
+    
     /**
      * Creates new form viewMahasiswa
      */
     public viewMahasiswa() {
         initComponents();
         mhsServis = new controllerMahasiswa();
-        
-           
-//supaya kalo data di table di klik maka data akan muncul langsung di textfield nim nama alamat
-        /*tContent.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        /* This is for when you click the row or data in table the data will show up and you can edit it!
+        tContent.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
                 public void valueChanged(ListSelectionEvent e) {
                     row = tContent.getSelectedRow();
                     if(row!=-1){
-                        isiText();
+                        doEdit();
                     }
-                }
+                }   
         });*/
         this.statusAwal();
-        //okkk = new DefaultTableModel(new String[]{"Nama","Nilai UTS","Nilai UAS","Nilai Akhir","Grade"},0);
-        //tContent.setModel(okkk);
     }
 
     /**
@@ -99,27 +96,33 @@ public class viewMahasiswa extends javax.swing.JFrame {
         cbJurusanMM = new javax.swing.JCheckBox();
         cbJurusanTKJ = new javax.swing.JCheckBox();
         ccbBirthDate = new de.wannawork.jcalendar.JCalendarComboBox();
-        buttonChangePhoto = new javax.swing.JButton();
-        imageProfile = new javax.swing.JLabel();
-        buttonSave = new javax.swing.JButton();
         buttonEdit = new javax.swing.JButton();
         buttonDelete = new javax.swing.JButton();
         buttonReset = new javax.swing.JButton();
         lAgama = new javax.swing.JLabel();
         comBoxAgama = new javax.swing.JComboBox<>();
         buttonExit = new javax.swing.JToggleButton();
-        spTable = new javax.swing.JScrollPane();
-        tContent = new javax.swing.JTable();
+        lGRADE = new javax.swing.JLabel();
+        tfGRADE = new javax.swing.JTextField();
+        jPanel1 = new javax.swing.JPanel();
+        imageProfile = new javax.swing.JLabel();
+        buttonChangePhoto = new javax.swing.JButton();
+        buttonSave = new javax.swing.JButton();
+        panelListData = new javax.swing.JPanel();
         lFind = new javax.swing.JLabel();
         tfFind = new javax.swing.JTextField();
         buttonFind = new javax.swing.JButton();
         buttonRefresh = new javax.swing.JButton();
+        buttonPrint = new javax.swing.JButton();
+        spTable = new javax.swing.JScrollPane();
+        tContent = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("CRUD MVC SQLite");
+        setResizable(false);
 
-        panelDetail.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        panelDetail.setForeground(new java.awt.Color(153, 153, 153));
+        panelDetail.setBorder(javax.swing.BorderFactory.createTitledBorder("Form Data"));
+        panelDetail.setForeground(new java.awt.Color(204, 204, 204));
         panelDetail.setMaximumSize(new java.awt.Dimension(291, 512));
 
         lID.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
@@ -148,9 +151,28 @@ public class viewMahasiswa extends javax.swing.JFrame {
 
         tfID.setEditable(false);
         tfID.setEnabled(false);
-        tfID.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tfIDActionPerformed(evt);
+
+        tfNIM.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                tfNIMKeyTyped(evt);
+            }
+        });
+
+        tfUTS.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tfUTSKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                tfUTSKeyTyped(evt);
+            }
+        });
+
+        tfUAS.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tfUASKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                tfUASKeyTyped(evt);
             }
         });
 
@@ -166,30 +188,6 @@ public class viewMahasiswa extends javax.swing.JFrame {
         cbJurusanMM.setText("MM");
 
         cbJurusanTKJ.setText("TKJ");
-
-        ccbBirthDate.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                ccbBirthDateStateChanged(evt);
-            }
-        });
-
-        buttonChangePhoto.setText("Ganti Foto...");
-        buttonChangePhoto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonChangePhotoActionPerformed(evt);
-            }
-        });
-
-        imageProfile.setBackground(new java.awt.Color(204, 0, 102));
-        imageProfile.setForeground(new java.awt.Color(102, 0, 204));
-
-        buttonSave.setText("Simpan");
-        buttonSave.setPreferredSize(new java.awt.Dimension(80, 23));
-        buttonSave.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonSaveActionPerformed(evt);
-            }
-        });
 
         buttonEdit.setText("Ubah");
         buttonEdit.addActionListener(new java.awt.event.ActionListener() {
@@ -224,6 +222,53 @@ public class viewMahasiswa extends javax.swing.JFrame {
             }
         });
 
+        lGRADE.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lGRADE.setText("Grade");
+
+        tfGRADE.setEditable(false);
+        tfGRADE.setEnabled(false);
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Foto"));
+
+        imageProfile.setBackground(new java.awt.Color(255, 51, 153));
+        imageProfile.setForeground(new java.awt.Color(102, 0, 204));
+        imageProfile.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 51, 51), 2));
+
+        buttonChangePhoto.setText("Ganti Foto...");
+        buttonChangePhoto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonChangePhotoActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(imageProfile, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(buttonChangePhoto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(buttonChangePhoto)
+                    .addComponent(imageProfile, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        buttonSave.setText("Simpan");
+        buttonSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonSaveActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelDetailLayout = new javax.swing.GroupLayout(panelDetail);
         panelDetail.setLayout(panelDetailLayout);
         panelDetailLayout.setHorizontalGroup(
@@ -231,7 +276,7 @@ public class viewMahasiswa extends javax.swing.JFrame {
             .addGroup(panelDetailLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelDetailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(buttonExit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(panelDetailLayout.createSequentialGroup()
                         .addGroup(panelDetailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lID)
@@ -244,29 +289,22 @@ public class viewMahasiswa extends javax.swing.JFrame {
                             .addComponent(tfNIM)
                             .addComponent(tfName)
                             .addComponent(ccbBirthDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(buttonChangePhoto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelDetailLayout.createSequentialGroup()
-                        .addGroup(panelDetailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(buttonDelete, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(buttonSave, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(panelDetailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(buttonEdit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(buttonReset, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)))
                     .addGroup(panelDetailLayout.createSequentialGroup()
                         .addGroup(panelDetailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lUTS)
                             .addComponent(lUAS)
                             .addComponent(lJenisKelamin)
                             .addComponent(lJurusan)
-                            .addComponent(lAgama))
+                            .addComponent(lAgama)
+                            .addComponent(lGRADE))
                         .addGap(22, 22, 22)
                         .addGroup(panelDetailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(comBoxAgama, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(tfUTS)
+                            .addComponent(tfGRADE)
                             .addComponent(tfUAS)
                             .addGroup(panelDetailLayout.createSequentialGroup()
                                 .addGroup(panelDetailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(tfUTS, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(comBoxAgama, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addGroup(panelDetailLayout.createSequentialGroup()
                                         .addComponent(cbJurusanRPL)
                                         .addGap(18, 18, 18)
@@ -278,7 +316,16 @@ public class viewMahasiswa extends javax.swing.JFrame {
                                         .addGap(18, 18, 18)
                                         .addComponent(rbGirl)))
                                 .addGap(0, 0, Short.MAX_VALUE))))
-                    .addComponent(imageProfile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(panelDetailLayout.createSequentialGroup()
+                        .addComponent(buttonSave, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(buttonEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(buttonDelete, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(panelDetailLayout.createSequentialGroup()
+                        .addComponent(buttonExit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(buttonReset, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         panelDetailLayout.setVerticalGroup(
@@ -323,35 +370,25 @@ public class viewMahasiswa extends javax.swing.JFrame {
                 .addGroup(panelDetailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lUAS)
                     .addComponent(tfUAS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(11, 11, 11)
+                .addGroup(panelDetailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lGRADE)
+                    .addComponent(tfGRADE, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(imageProfile, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(13, 13, 13)
-                .addComponent(buttonChangePhoto)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(panelDetailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(buttonSave, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(buttonEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(panelDetailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(buttonDelete)
+                    .addComponent(buttonEdit)
+                    .addComponent(buttonSave))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelDetailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(buttonDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(buttonReset))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(buttonExit)
+                    .addComponent(buttonReset)
+                    .addComponent(buttonExit))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        tContent.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
-            },
-            new String [] {
-                "Nama", "Nilai UTS", "Nilai UAS", "Nilai Akhir", "Grade"
-            }
-        ));
-        spTable.setViewportView(tContent);
+        panelListData.setBorder(javax.swing.BorderFactory.createTitledBorder("All Data"));
 
         lFind.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         lFind.setText("Cari");
@@ -370,6 +407,58 @@ public class viewMahasiswa extends javax.swing.JFrame {
             }
         });
 
+        buttonPrint.setText("Print");
+        buttonPrint.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonPrintActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout panelListDataLayout = new javax.swing.GroupLayout(panelListData);
+        panelListData.setLayout(panelListDataLayout);
+        panelListDataLayout.setHorizontalGroup(
+            panelListDataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelListDataLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lFind)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(tfFind)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(buttonFind)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(buttonRefresh, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(buttonPrint)
+                .addContainerGap())
+        );
+        panelListDataLayout.setVerticalGroup(
+            panelListDataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelListDataLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelListDataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lFind)
+                    .addComponent(tfFind, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(buttonFind)
+                    .addComponent(buttonRefresh)
+                    .addComponent(buttonPrint))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        spTable.setPreferredSize(new java.awt.Dimension(635, 501));
+
+        tContent.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "Nama", "Nilai UTS", "Nilai UAS", "Nilai Akhir", "Grade"
+            }
+        ));
+        spTable.setViewportView(tContent);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -379,15 +468,8 @@ public class viewMahasiswa extends javax.swing.JFrame {
                 .addComponent(panelDetail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lFind)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(tfFind, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(buttonFind)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(buttonRefresh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(spTable, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(panelListData, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(spTable, javax.swing.GroupLayout.DEFAULT_SIZE, 667, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -395,15 +477,13 @@ public class viewMahasiswa extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelDetail, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lFind)
-                            .addComponent(tfFind, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(buttonFind)
-                            .addComponent(buttonRefresh))
+                        .addComponent(panelDetail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(panelListData, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(spTable)))
+                        .addComponent(spTable, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -411,7 +491,6 @@ public class viewMahasiswa extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    //untuk meload semua data yg ada di tabel mahasiswa ke dalam aplikasi ketika dibuka
     void loadData(){
         try {
             record = mhsServis.getAll("");
@@ -428,8 +507,7 @@ public class viewMahasiswa extends javax.swing.JFrame {
         }
     }
     
-    public ImageIcon ResizeImage(String ImagePath)
-    {
+    public ImageIcon ResizeImage(String ImagePath) {
         ImageIcon MyImage = new ImageIcon(ImagePath);
         Image img = MyImage.getImage();
         Image newImg = img.getScaledInstance(imageProfile.getWidth(), imageProfile.getHeight(), Image.SCALE_SMOOTH);
@@ -437,7 +515,6 @@ public class viewMahasiswa extends javax.swing.JFrame {
         return image;
     }
     
-//untuk mengurusi table yang ada di antarmuka. supaya mempunya judul nim, nama, alamat, serta dengan isinya yang //selalu update.
     void isiTabel(){
         Object data[][]=new Object[record.size()][6];
         int x = 0;
@@ -457,14 +534,14 @@ public class viewMahasiswa extends javax.swing.JFrame {
         spTable.setViewportView(tContent);
     }
 
-//untuk mengosongkan text bila setelah tambah data atau yang lainnya
     void kosongkanText(){
         tfName.setText("");
         tfID.setText("");
         tfNIM.setText("");
         tfUAS.setText("");
         tfUTS.setText("");
-        imageRightnow = "img/profile.png";
+        tfGRADE.setText("");
+        imageRightnow = "img\\profile.jpg";
         updateImageNow = "";
         cbJurusanRPL.setSelected(false);
         cbJurusanMM.setSelected(false);
@@ -482,7 +559,7 @@ public class viewMahasiswa extends javax.swing.JFrame {
         }
         ccbBirthDate.setDate(date2);
     }
-//untuk menyatukan method2 yang kita buat diatas supaya dapat berjalan secara teratur dan memanggilnya dengan //mudah.
+
     void statusAwal(){
         kosongkanText();
         loadData();
@@ -518,39 +595,21 @@ public class viewMahasiswa extends javax.swing.JFrame {
         
         return okkk;
     }
-
-    private void tfIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfIDActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tfIDActionPerformed
-
-    private void buttonFindActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonFindActionPerformed
-        // TODO add your handling code here:
-        if (!"".equals(tfFind.getText())) {
-            this.findData(tfFind.getText());
-            isiTabel();
-        } else {
-            loadData();
-            isiTabel();
-        }
-    }//GEN-LAST:event_buttonFindActionPerformed
-
-    private void buttonChangePhotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonChangePhotoActionPerformed
-        // TODO add your handling code here:
+    
+    void doChangePhoto() {
         JFileChooser chooser = new JFileChooser();
-                FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                        "JPG, GIF, and PNG Images", "jpg", "gif", "png");
-                chooser.setFileFilter(filter);
-                int returnVal = chooser.showOpenDialog(this);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    fileRightnow = chooser.getSelectedFile();
-                    System.out.println("You chose to open this file: "+ fileRightnow.getName());
-                    imageRightnow = "img/" +LocalDateTime.now().getYear()+LocalDateTime.now().getMonth()+LocalDateTime.now().getDayOfMonth()+LocalDateTime.now().getHour()+LocalDateTime.now().getMinute()+LocalDateTime.now().getSecond()+"-"+fileRightnow.getName(); //Logger.getLogger(SaveImageFile.class.getName()).log(Level.SEVERE, null, ex);
-                    imageProfile.setIcon(ResizeImage(fileRightnow.getPath()));              
-                }
-    }//GEN-LAST:event_buttonChangePhotoActionPerformed
-
-    private void buttonEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonEditActionPerformed
-        // TODO add your handling code here:
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG, GIF, and PNG Images", "jpg", "gif", "png");
+        chooser.setFileFilter(filter);
+        int returnVal = chooser.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            fileRightnow = chooser.getSelectedFile();
+            System.out.println("You chose to open this file: "+ fileRightnow.getName());
+            imageRightnow = "img\\" +LocalDateTime.now().getYear()+LocalDateTime.now().getMonth()+LocalDateTime.now().getDayOfMonth()+LocalDateTime.now().getHour()+LocalDateTime.now().getMinute()+LocalDateTime.now().getSecond()+"-"+fileRightnow.getName(); //Logger.getLogger(SaveImageFile.class.getName()).log(Level.SEVERE, null, ex);
+            imageProfile.setIcon(ResizeImage(fileRightnow.getPath()));              
+        }
+    }
+    
+    void doEdit() {
         int Row_ID = tContent.getSelectedRow();
         if (Row_ID >= 0) {
             //PopupUserResetTitleField("Input");
@@ -571,7 +630,6 @@ public class viewMahasiswa extends javax.swing.JFrame {
                 }
                 String asdd[] = okzz.getJurusan().split(", ");
                 for (int asd = 0; asd<asdd.length; asd++) {
-
                     if ("RPL".equals(asdd[asd])) {
                         cbJurusanRPL.setSelected(true);
                     }
@@ -588,13 +646,13 @@ public class viewMahasiswa extends javax.swing.JFrame {
                 Path xzz = Paths.get(okzz.getProfileGambar());
                 boolean isImgExist = Files.exists(xzz);
                 if (okzz.getProfileGambar() == null || !isImgExist) {
-                    imageRightnow = "img/profile.png";
-                    imageProfile.setIcon(ResizeImage("img/profile.png"));
+                    imageRightnow = "img\\profile.jpg";
+                    imageProfile.setIcon(ResizeImage("img\\profile.jpg"));
                 } else {
                     imageRightnow = okzz.getProfileGambar();
                     imageProfile.setIcon(ResizeImage(okzz.getProfileGambar()));
                 }
-                
+                tfGRADE.setText(okzz.getGrade());
                 updateImageNow = okzz.getProfileGambar();
                 date2 = new SimpleDateFormat("yyyy-MM-dd").parse(okzz.getTanggalLahir());
                 ccbBirthDate.setDate(date2);
@@ -605,10 +663,19 @@ public class viewMahasiswa extends javax.swing.JFrame {
                 java.util.logging.Logger.getLogger(viewMahasiswa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
         }
-    }//GEN-LAST:event_buttonEditActionPerformed
-
-    private void buttonSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSaveActionPerformed
-        // TODO add your handling code here:
+    }
+    
+    void doFind() {
+        if (!"".equals(tfFind.getText())) {
+            this.findData(tfFind.getText());
+            isiTabel();
+        } else {
+            loadData();
+            isiTabel();
+        }
+    }
+    
+    void doSave() {
         if (validasi()) {
             Date date = ccbBirthDate.getDate();  
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  
@@ -645,7 +712,6 @@ public class viewMahasiswa extends javax.swing.JFrame {
             }
 
             try {
-                // TODO add your handling code here:
                 Mahasiswa mhs = new Mahasiswa(
                         idss,
                         tfNIM.getText(),
@@ -663,9 +729,6 @@ public class viewMahasiswa extends javax.swing.JFrame {
                     mhsServis.update(mhs);
                 } else {
                     mhsServis.insert(mhs);
-
-
-
                 }
 
                 if (!updateImageNow.equals(imageRightnow) && fileRightnow != null){
@@ -678,23 +741,53 @@ public class viewMahasiswa extends javax.swing.JFrame {
                     } 
                 }
 
-
-
                 this.statusAwal();
                 JOptionPane.showMessageDialog(this, "Data Tersimpan");
             } catch (SQLException ex) {
                 //Logger.getLogger(viewMahasiswa.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-    }//GEN-LAST:event_buttonSaveActionPerformed
-
-    private void ccbBirthDateStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_ccbBirthDateStateChanged
-        // TODO add your handling code here:
-        
-    }//GEN-LAST:event_ccbBirthDateStateChanged
-
-    private void buttonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDeleteActionPerformed
-        // TODO add your handling code here:
+    }
+    
+    void doPrint() {
+        PrintJob p = getToolkit().getPrintJob(this,"Report",null);
+        Graphics g = p.getGraphics();
+        g.setFont(new Font("Serif",Font.BOLD,18));
+        g.drawString("Daftar Nilai", 250, 50);
+        g.setFont(new Font("Serif",Font.BOLD,12));
+        g.drawString("No", 25, 100);
+        g.drawString("Gambar", 50, 100);
+        g.drawString("NIM", 115, 100);
+        g.drawString("Nama", 160, 100);
+        g.drawString("Nilai UTS", 330, 100);
+        g.drawString("Nilai UAS", 410, 100);
+        g.drawString("Nilai Akhir", 480, 100);
+        g.drawString("Grade", 560, 100);
+        g.drawLine(15, 110, 600, 110);
+        g.setFont(new Font("Serif",Font.PLAIN,12));
+        Object data[][]=new Object[record.size()][6];
+        int x = 0;
+        for (Iterator it = record.iterator(); it.hasNext();) {
+            Mahasiswa ss = (Mahasiswa) it.next();
+            String wahh = "img\\profile.jpg";
+            if (ss.getProfileGambar() != null && !"".equals(ss.getProfileGambar())) {
+                wahh = ss.getProfileGambar();
+            }
+            Image imaged = new ImageIcon(wahh).getImage();
+            g.drawString(String.valueOf(x+1), 25, 150 + (x * 60));
+            g.drawImage(imaged, 50, 120 + (x * 60), 50, 50, null);
+            g.drawString(ss.getNIM(), 115, 150 + (x * 60));
+            g.drawString(ss.getNama(), 160, 150 + (x * 60));
+            g.drawString(String.valueOf(ss.getNilaiUTS()), 330, 150 + (x * 60));
+            g.drawString(String.valueOf(ss.getNilaiUAS()), 410, 150 + (x * 60));
+            g.drawString(String.valueOf(ss.getNilaiAkhir()), 480, 150 + (x * 60));
+            g.drawString(String.valueOf(ss.getGrade()), 560, 150 + (x * 60));
+            x++;
+        }
+        p.end();
+    }
+    
+    void doDelete() {
         int Row_ID = tContent.getSelectedRow();
         if (Row_ID >= 0) {
             //PopupUserResetTitleField("Input");
@@ -711,6 +804,35 @@ public class viewMahasiswa extends javax.swing.JFrame {
                 java.util.logging.Logger.getLogger(viewMahasiswa.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
         }
+    }
+    
+    void checkGrade() {
+        if (!"".equals(tfUTS.getText()) && !"".equals(tfUAS.getText())) {
+            Mahasiswa mhs = new Mahasiswa();
+            mhs.setNilaiUAS(Float.parseFloat(tfUAS.getText()));
+            mhs.setNilaiUTS(Float.parseFloat(tfUTS.getText()));
+            this.tfGRADE.setText(mhs.getGrade());
+        }
+    }
+
+    private void buttonFindActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonFindActionPerformed
+        // TODO add your handling code here:
+        doFind();
+    }//GEN-LAST:event_buttonFindActionPerformed
+
+    private void buttonChangePhotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonChangePhotoActionPerformed
+        // TODO add your handling code here:
+        doChangePhoto();
+    }//GEN-LAST:event_buttonChangePhotoActionPerformed
+
+    private void buttonEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonEditActionPerformed
+        // TODO add your handling code here:
+        doEdit();
+    }//GEN-LAST:event_buttonEditActionPerformed
+
+    private void buttonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDeleteActionPerformed
+        // TODO add your handling code here:
+        doDelete();
     }//GEN-LAST:event_buttonDeleteActionPerformed
 
     private void buttonResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonResetActionPerformed
@@ -728,6 +850,50 @@ public class viewMahasiswa extends javax.swing.JFrame {
         // TODO add your handling code here:
         System.exit(0);
     }//GEN-LAST:event_buttonExitActionPerformed
+    
+    private void tfUTSKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfUTSKeyReleased
+        // TODO add your handling code here:
+        checkGrade();
+    }//GEN-LAST:event_tfUTSKeyReleased
+
+    private void tfUASKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfUASKeyReleased
+        // TODO add your handling code here:
+        checkGrade();
+    }//GEN-LAST:event_tfUASKeyReleased
+
+    private void buttonPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPrintActionPerformed
+        // TODO add your handling code here:
+        doPrint();
+    }//GEN-LAST:event_buttonPrintActionPerformed
+
+    private void buttonSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSaveActionPerformed
+        // TODO add your handling code here:
+        doSave();
+    }//GEN-LAST:event_buttonSaveActionPerformed
+
+    private void tfNIMKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfNIMKeyTyped
+        // TODO add your handling code here:
+        char enter = evt.getKeyChar();
+        if(!(Character.isDigit(enter))){
+            evt.consume();
+        }
+    }//GEN-LAST:event_tfNIMKeyTyped
+
+    private void tfUTSKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfUTSKeyTyped
+        // TODO add your handling code here:
+        char enter = evt.getKeyChar();
+        if(!(Character.isDigit(enter))){
+            evt.consume();
+        }
+    }//GEN-LAST:event_tfUTSKeyTyped
+
+    private void tfUASKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfUASKeyTyped
+        // TODO add your handling code here:
+        char enter = evt.getKeyChar();
+        if(!(Character.isDigit(enter))){
+            evt.consume();
+        }
+    }//GEN-LAST:event_tfUASKeyTyped
 
     /**
      * @param args the command line arguments
@@ -758,6 +924,7 @@ public class viewMahasiswa extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new viewMahasiswa().setVisible(true);
             }
@@ -771,6 +938,7 @@ public class viewMahasiswa extends javax.swing.JFrame {
     private javax.swing.JButton buttonEdit;
     private javax.swing.JToggleButton buttonExit;
     private javax.swing.JButton buttonFind;
+    private javax.swing.JButton buttonPrint;
     private javax.swing.JButton buttonRefresh;
     private javax.swing.JButton buttonReset;
     private javax.swing.JButton buttonSave;
@@ -781,9 +949,11 @@ public class viewMahasiswa extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> comBoxAgama;
     private javax.swing.JFileChooser imageChooser;
     private javax.swing.JLabel imageProfile;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lAgama;
     private javax.swing.JLabel lBirthDate;
     private javax.swing.JLabel lFind;
+    private javax.swing.JLabel lGRADE;
     private javax.swing.JLabel lID;
     private javax.swing.JLabel lJenisKelamin;
     private javax.swing.JLabel lJurusan;
@@ -792,11 +962,13 @@ public class viewMahasiswa extends javax.swing.JFrame {
     private javax.swing.JLabel lUAS;
     private javax.swing.JLabel lUTS;
     private javax.swing.JPanel panelDetail;
+    private javax.swing.JPanel panelListData;
     private javax.swing.JRadioButton rbBoy;
     private javax.swing.JRadioButton rbGirl;
     public javax.swing.JScrollPane spTable;
     public javax.swing.JTable tContent;
     private javax.swing.JTextField tfFind;
+    private javax.swing.JTextField tfGRADE;
     private javax.swing.JTextField tfID;
     private javax.swing.JTextField tfNIM;
     private javax.swing.JTextField tfName;

@@ -45,15 +45,15 @@ public class Mahasiswa {
     public String getGrade() {
         float nilaiA = this.getNilaiAkhir();
         String hasil = "F";
-        if (nilaiA > 90) {
+        if (nilaiA >= 90) {
             hasil = "A";
-        } else if (nilaiA > 80) {
+        } else if (nilaiA >= 80) {
             hasil = "B";
-        } else if (nilaiA > 70) {
+        } else if (nilaiA >= 70) {
             hasil = "C";
-        } else if (nilaiA > 60) {
+        } else if (nilaiA >= 60) {
             hasil = "D";
-        } else if (nilaiA > 50) {
+        } else if (nilaiA >= 50) {
             hasil = "E";
         } else {
             hasil = "F";
@@ -84,6 +84,14 @@ public class Mahasiswa {
     
     public float getNilaiUAS() {
         return this.nilaiuas;
+    }
+    
+    public float setNilaiUTS(float nilaii) {
+        return this.nilaiuts = nilaii;
+    }
+    
+    public float setNilaiUAS(float nilaii) {
+        return this.nilaiuas = nilaii;
     }
     
     public float getNilaiAkhir() {

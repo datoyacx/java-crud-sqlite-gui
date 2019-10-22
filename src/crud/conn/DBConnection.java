@@ -34,7 +34,7 @@ public class DBConnection {
            JOptionPane.showMessageDialog(null, "Tidak ada Driver!\n" + ex);
        }
  
-       String pathdb = "db/xs.db";
+       String pathdb = "db/crud.db";
        Path x = Paths.get(pathdb);
        boolean isDbExist = Files.exists(x);
        String url="jdbc:sqlite:"+pathdb;

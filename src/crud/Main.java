@@ -5,8 +5,6 @@
  */
 package crud;
 
-import java.lang.System.Logger;
-import java.lang.System.Logger.Level;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
