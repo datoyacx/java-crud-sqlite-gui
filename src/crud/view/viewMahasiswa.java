@@ -76,6 +76,8 @@ public class viewMahasiswa extends javax.swing.JFrame {
 
         imageChooser = new javax.swing.JFileChooser();
         bgGender = new javax.swing.ButtonGroup();
+        spPreviewSend = new javax.swing.JScrollPane();
+        taPreviewSend = new javax.swing.JTextArea();
         panelDetail = new javax.swing.JPanel();
         lID = new javax.swing.JLabel();
         lNIM = new javax.swing.JLabel();
@@ -114,8 +116,13 @@ public class viewMahasiswa extends javax.swing.JFrame {
         buttonFind = new javax.swing.JButton();
         buttonRefresh = new javax.swing.JButton();
         buttonPrint = new javax.swing.JButton();
+        buttonPreview = new javax.swing.JButton();
         spTable = new javax.swing.JScrollPane();
         tContent = new javax.swing.JTable();
+
+        taPreviewSend.setColumns(20);
+        taPreviewSend.setRows(5);
+        spPreviewSend.setViewportView(taPreviewSend);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("CRUD MVC SQLite");
@@ -377,10 +384,11 @@ public class viewMahasiswa extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(panelDetailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(buttonDelete)
-                    .addComponent(buttonEdit)
-                    .addComponent(buttonSave))
+                .addGroup(panelDetailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(buttonEdit, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(panelDetailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(buttonDelete)
+                        .addComponent(buttonSave)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelDetailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(buttonReset)
@@ -414,6 +422,13 @@ public class viewMahasiswa extends javax.swing.JFrame {
             }
         });
 
+        buttonPreview.setText("Preview");
+        buttonPreview.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonPreviewActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelListDataLayout = new javax.swing.GroupLayout(panelListData);
         panelListData.setLayout(panelListDataLayout);
         panelListDataLayout.setHorizontalGroup(
@@ -423,8 +438,10 @@ public class viewMahasiswa extends javax.swing.JFrame {
                 .addComponent(lFind)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(tfFind)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(buttonFind)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(buttonPreview)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(buttonRefresh, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -440,7 +457,8 @@ public class viewMahasiswa extends javax.swing.JFrame {
                     .addComponent(tfFind, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(buttonFind)
                     .addComponent(buttonRefresh)
-                    .addComponent(buttonPrint))
+                    .addComponent(buttonPrint)
+                    .addComponent(buttonPreview))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -469,7 +487,7 @@ public class viewMahasiswa extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(panelListData, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(spTable, javax.swing.GroupLayout.DEFAULT_SIZE, 667, Short.MAX_VALUE))
+                    .addComponent(spTable, javax.swing.GroupLayout.DEFAULT_SIZE, 819, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -787,6 +805,24 @@ public class viewMahasiswa extends javax.swing.JFrame {
         p.end();
     }
     
+    void doPreview() {
+        crud.view.Preview preview = new crud.view.Preview();
+        String formatyo = "%1$2s %2$-5s %3$-12s %4$-10s %5$-10s %6$-12s %7$-5s";
+        String formatyo2 = "%1$-2s %2$-5s %3$-12s %4$-10s %5$-10s %6$-12s %7$-2s";
+        String yehh;
+        taPreviewSend.setText("Daftar Nilai\n");
+        taPreviewSend.append(String.format(formatyo, "No", "NIM", "Nama", "Nilai UTS", "Nilai UAS", "Nilai Akhir", "Grade\n"));
+        int x = 0;
+        for (Iterator it = record.iterator(); it.hasNext();) {
+            Mahasiswa ss = (Mahasiswa) it.next();
+            yehh = String.format(formatyo2, x+1, ss.getNIM(), ss.getNama(), ss.getNilaiUTS(), ss.getNilaiUAS(), ss.getNilaiAkhir(), ss.getGrade());
+            taPreviewSend.append(yehh+"\n");
+            //jTextArea1.append(+"\t-20f"++"\t"+ss.getNama()+"\t"+String.valueOf(ss.getNilaiUTS())+"\t"+String.valueOf(ss.getNilaiUAS())+"\t"+String.valueOf(ss.getNilaiAkhir())+"\t"+String.valueOf(ss.getGrade())+"\n");
+            x++;
+        }
+        preview.runPreview(taPreviewSend.getText());
+    }
+    
     void doDelete() {
         int Row_ID = tContent.getSelectedRow();
         if (Row_ID >= 0) {
@@ -895,6 +931,11 @@ public class viewMahasiswa extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_tfUASKeyTyped
 
+    private void buttonPreviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPreviewActionPerformed
+        // TODO add your handling code here:
+        doPreview();
+    }//GEN-LAST:event_buttonPreviewActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -938,6 +979,7 @@ public class viewMahasiswa extends javax.swing.JFrame {
     private javax.swing.JButton buttonEdit;
     private javax.swing.JToggleButton buttonExit;
     private javax.swing.JButton buttonFind;
+    private javax.swing.JButton buttonPreview;
     private javax.swing.JButton buttonPrint;
     private javax.swing.JButton buttonRefresh;
     private javax.swing.JButton buttonReset;
@@ -965,8 +1007,10 @@ public class viewMahasiswa extends javax.swing.JFrame {
     private javax.swing.JPanel panelListData;
     private javax.swing.JRadioButton rbBoy;
     private javax.swing.JRadioButton rbGirl;
+    private javax.swing.JScrollPane spPreviewSend;
     public javax.swing.JScrollPane spTable;
     public javax.swing.JTable tContent;
+    private javax.swing.JTextArea taPreviewSend;
     private javax.swing.JTextField tfFind;
     private javax.swing.JTextField tfGRADE;
     private javax.swing.JTextField tfID;
